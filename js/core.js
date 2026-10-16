@@ -3,7 +3,7 @@
    (trạng thái, tải nội dung, âm thanh, micro, Hỏi AI, tiện ích)
    ========================================================= */
 'use strict';
-const APP_VERSION = '0.2.0';
+const APP_VERSION = '0.3.0';
 const STORE_KEY = 'v12-state';
 const INTERVALS = [0, 1, 3, 7, 14, 30];
 

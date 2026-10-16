@@ -2,7 +2,7 @@
    - Phần khung app: lấy từ bộ nhớ đệm (chạy được khi không có mạng).
    - Nội dung (content/*.bin, đã mã hoá): ưu tiên mạng để nhận bản mới, mất mạng thì dùng bản đã lưu.
    Khi đổi phiên bản app: tăng VERSION bên dưới (khớp APP_VERSION trong js/core.js). */
-const VERSION = '0.2.0';
+const VERSION = '0.3.0';
 const SHELL_CACHE = 'v12-shell-' + VERSION;
 const CONTENT_CACHE = 'v12-content';
 const FONT_CACHE = 'v12-fonts';

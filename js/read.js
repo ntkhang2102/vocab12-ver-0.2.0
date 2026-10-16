@@ -2,17 +2,33 @@
    3. ĐỌC BÀI — đọc toàn bài, quét dịch Từ/Cụm/Câu/Đoạn, nghe cả bài,
    song ngữ, đọc theo bằng micro. Bản dịch do Claude soạn được gắn nhãn.
    ========================================================= */
+/* Các dạng gốc có thể của một từ (số nhiều, quá khứ, -ing, so sánh hơn…) — khớp với tools/ khi kiểm tra độ phủ từ điển */
+function wordForms(w) {
+  let lw = w.toLowerCase().replace(/[’]/g, "'");
+  const out = [lw], add = x => { if (x && x.length >= 2 && !out.includes(x)) out.push(x) };
+  lw = lw.replace(/'s$/, ''); add(lw);
+  if (/s'$/.test(lw)) { lw = lw.slice(0, -1); add(lw) }
+  [['ies', 'y'], ['ied', 'y'], ['ier', 'y'], ['iest', 'y'], ['ily', 'y']].forEach(([s, r]) => { if (lw.endsWith(s)) add(lw.slice(0, -s.length) + r) });
+  ['es', 's', 'ed', 'd', 'ing', 'er', 'est', 'ly', 'r', 'st'].forEach(s => {
+    if (lw.endsWith(s) && lw.length - s.length >= 2) {
+      const b = lw.slice(0, -s.length); add(b);
+      if (['ed', 'ing', 'er', 'est'].includes(s)) { add(b + 'e'); if (b.length >= 3 && b[b.length - 1] === b[b.length - 2]) add(b.slice(0, -1)) }
+    }
+  });
+  return out;
+}
+let _G = null, _GU = null;
 function glossOf(w) {
-  const lw = w.toLowerCase().replace(/[’]/g, "'");
-  const G = Object.assign({}, GLOSS, U.gloss || {});
-  return G[lw] || G[lw.replace(/'s$/, '')] || G[lw.replace(/(ies)$/, 'y')] || G[lw.replace(/(es|s)$/, '')] || G[lw.replace(/(ed|d)$/, '')] || G[lw.replace(/ing$/, '')] || null;
+  if (!_G || _GU !== (U && U.id)) { _G = Object.assign({}, GLOSS); Object.entries(U.gloss || {}).forEach(([k, v]) => _G[k.toLowerCase()] = v); _GU = U && U.id }
+  for (const f of wordForms(w)) if (_G[f]) return _G[f];
+  return null;
 }
 function unitWordOf(w) {
   const lw = w.toLowerCase().replace(/'s$/, '');
   if (lw.length < 3) return null;
   return U.WORDS.find(v => { if (v.word.includes(' ')) return false; const st = v.word.slice(0, Math.max(4, v.word.length - 3)).toLowerCase(); return lw.startsWith(st) && lw.length <= v.word.length + 3 }) || null;
 }
-const cleanWord = s => s.replace(/^[^A-Za-z]+|[^A-Za-z'-]+$/g, '');
+const cleanWord = s => s.replace(/^[^A-Za-zÀ-ÿ]+|[^A-Za-zÀ-ÿ'’-]+$/g, '');
 const Reader = {
   t: 0, mode: 'word', sel: null, showVi: false, playing: null, mic: null, rate: 0.9, unit: null, lib: 'book', topicId: null,
   D() { return this.lib === 'topic' ? UNITS[this.topicId] : U },

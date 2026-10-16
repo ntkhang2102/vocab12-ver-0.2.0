@@ -112,7 +112,14 @@ async function boot() {
   updateNewsDot(); syncHeaderVar();
   if (first) openUnitPicker();
   // Tải sẵn mọi nội dung đã mở để học được khi không có mạng (file vẫn ở dạng mã hoá).
-  setTimeout(() => all.forEach(u => fetch('content/' + u.id + '.bin').catch(() => { })), 3000);
+  // Chỉ tải file chưa có hoặc đã đổi phiên bản, tải lần lượt từng file để không nghẽn mạng.
+  setTimeout(async () => {
+    let got = {}; try { got = JSON.parse(localStorage.getItem('v12-pref') || '{}') } catch (e) { }
+    for (const u of all) {
+      if (got[u.id] === u.contentVersion) continue;
+      try { const r = await fetch('content/' + u.id + '.bin'); if (r.ok) { got[u.id] = u.contentVersion; try { localStorage.setItem('v12-pref', JSON.stringify(got)) } catch (e) { } } } catch (e) { break }
+    }
+  }, 3000);
 }
 $('#unitBtn').onclick = () => CATALOG && Auth.key && openUnitPicker();
 $('#setBtn').onclick = () => CATALOG && Auth.key && openSettings();
