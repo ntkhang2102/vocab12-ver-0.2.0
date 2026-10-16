@@ -1,0 +1,16 @@
+{
+ "v": 1,
+ "keyVersion": "82b42fc9",
+ "kdf": {
+  "alg": "PBKDF2-SHA256",
+  "iter": 150000
+ },
+ "salt": "L6wXxnHyvnmiay8z1xYNDA==",
+ "entries": [
+  {
+   "id": "f141d16f0dcb44af",
+   "iv": "rc+Y0mvo7Cwk8mBM",
+   "wk": "v6lxItVhwgPgX0mmiehAoEpUyVLh20QPstKCs/qrvsoSPZ7sXiCsoKB5UclCqCx1"
+  }
+ ]
+}
